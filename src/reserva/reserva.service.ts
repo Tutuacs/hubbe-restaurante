@@ -1,24 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { Reserva } from './Data/reserva.repository';
 import { CreateReservaDto } from './Validation';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
-export class ReservaService extends Reserva{
+export class ReservaService{
+
+  constructor(private readonly prisma: PrismaService){}
 
   create(data: CreateReservaDto) {
-    return this.CreateReserva(data);
+    return this.prisma.CreateReserva(data);
   }
 
   findAll() {
-    return this.GetAllReserva();
+    return this.prisma.GetAllReserva();
   }
 
   findOne(id: string) {
-    return this.GetReservaById(id);
+    return this.prisma.GetReservaById(id);
   }
 
   remove(id: string) {
-    return this.DeleteReserva(id);
+    return this.prisma.DeleteReserva(id);
   }
 
 }

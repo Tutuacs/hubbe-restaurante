@@ -3,7 +3,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  binaryTargets = ["native", "debian-openssl-3.0.x"]
 }
 
 datasource db {
@@ -13,7 +12,7 @@ datasource db {
 
 model Mesa {
   id      String    @id @default(auto()) @map("_id") @db.ObjectId
-  numero  Int      @unique
+  numero  Int       @unique
   lugares Int?      @default(2)
   Reserva Reserva[]
 }
@@ -22,7 +21,7 @@ model Usuario {
   id       String    @id @default(auto()) @map("_id") @db.ObjectId
   email    String    @unique
   password String
-  admin    Boolean   @default(false)
+  role     Boolean   @default(false)
   Reserva  Reserva[]
 }
 
