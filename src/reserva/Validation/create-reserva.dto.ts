@@ -2,10 +2,9 @@ export class CreateReservaDto {
 
     data: Date;
 
-    mesaId: Array<string>;
-
     usuarioId: string;
 
+    mesaId: Array<string>;
+    
     pessoas: number;
-
 }

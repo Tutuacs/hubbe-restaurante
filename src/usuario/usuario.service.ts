@@ -17,6 +17,13 @@ export class UsuarioService {
     return this.prisma.GetAllUsuario();
   }
 
+  findAllReservas(token: { id: string, role: Role }) {
+    if(token.role != Role.Admin){
+      return this.prisma.GetAllReservaByUsuario(token.id);
+    }
+    return this.prisma.GetAllReserva();
+  }
+
   findOne(id: string, token: { id: string, role: Role}) {
     if(token.role != Role.Admin){
       if(token.id != id)

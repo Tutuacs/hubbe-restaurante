@@ -24,6 +24,10 @@ export class UsuarioController {
   findAll() {
     return this.usuarioService.findAll();
   }
+  @Get()
+  findAllReservas(@Token('id') token: { id: string, role: Role }) {
+    return this.usuarioService.findAllReservas(token);
+  }
   
   @Get(':id')
   findOne(@Param('id') id: string, @Token('id') token: { id: string, role: Role }) {

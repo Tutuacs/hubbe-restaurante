@@ -1,15 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateReservaDto } from './Validation';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { FindReservaDto } from './Validation/find-reserva.dto';
+import { CreateReservaDto, CreateAnyReservaDto, FindReservaDto } from './Validation';
 
 @Injectable()
 export class ReservaService{
 
   constructor(private readonly prisma: PrismaService){}
 
-  create(data: CreateReservaDto) {
-    return this.prisma.CreateReserva(data);
+  create(data: CreateAnyReservaDto, type: string, id: string) {
+    const reserva = new CreateReservaDto();
+    reserva.data = data.data;
+    reserva.pessoas = data.pessoas;
+    reserva.usuarioId = id; 
+    if(type == 'auto'){
+      return this.prisma.CreateReservaAuto(data, id);
+    }else if( type == 'manual'){
+      return this.prisma.CreateReserva(data);
+    }else{
+      throw new Error("Tipo de reserva inválido, você deve escolher entre 'auto' ou 'manual'");
+    }
   }
 
   disponiveis(data: FindReservaDto){
