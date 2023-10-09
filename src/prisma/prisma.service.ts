@@ -208,34 +208,33 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     });
   }
 
-  GetMesasReserva(mesas: Array<Mesa>, pessoas: number) : Array<string> {
+  GetMesasReserva(mesas: Array<Mesa>, pessoas: number): Array<string> {
     const mesa = mesas.find((mesa) => mesa.lugares == pessoas);
     if (mesa) {
       return [mesa.id];
     } else {
-      try {
-        let somaLugaresReserva = -1;
-        let arrayReserva = [];
-        for (let i = mesas.length - 1; i >= 0; i--) {
-          for (let j = 0; j < mesas.length - 1; j++) {
-            const somaLugares = mesas[i].lugares + mesas[j].lugares;
-            if (somaLugares === pessoas) {
-              return [mesas[i].id, mesas[j].id];
-            }else if(somaLugares > pessoas && somaLugares < somaLugaresReserva || somaLugaresReserva == -1){
-              arrayReserva = [mesas[i].id, mesas[j].id];
-            }
+      let somaLugaresReserva = -1;
+      let arrayReserva = [];
+      for (let i = mesas.length - 1; i >= 0; i--) {
+        for (let j = 0; j < mesas.length - 1; j++) {
+          const somaLugares = mesas[i].lugares + mesas[j].lugares;
+          if (somaLugares === pessoas) {
+            return [mesas[i].id, mesas[j].id];
+          } else if (
+            (somaLugares > pessoas && somaLugares < somaLugaresReserva) ||
+            somaLugaresReserva == -1
+          ) {
+            arrayReserva = [mesas[i].id, mesas[j].id];
           }
         }
+      }
 
-        const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
+      const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
 
-        if(mesaReserva.lugares <=  somaLugaresReserva){
-          return [mesaReserva.id];
-        }else{
-          return arrayReserva;
-        }
-      } catch {
-
+      if (mesaReserva.lugares <= somaLugaresReserva) {
+        return [mesaReserva.id];
+      } else {
+        return arrayReserva;
       }
     }
   }
