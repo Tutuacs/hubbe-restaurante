@@ -1,4 +1,4 @@
-import { IsEmail, IsString, IsStrongPassword } from "class-validator";
+import { IsBoolean, IsEmail, IsOptional, IsString, IsStrongPassword } from "class-validator";
 
 export class CreateUsuarioDto {
 
@@ -15,5 +15,9 @@ export class CreateUsuarioDto {
         minSymbols:0,
     })
     password: string;
+
+    @IsOptional()
+    @IsBoolean()
+    role: boolean;
 
 }

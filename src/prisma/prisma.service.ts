@@ -6,12 +6,14 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { Mesa, PrismaClient } from '@prisma/client';
 import { LoginDto } from 'src/auth/Validation';
 import { CreateMesaDto, UpdateMesaDto } from 'src/mesa/Validation';
 import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuario/Validation';
 import * as bcrypt from 'bcrypt';
 import { Role } from 'src/enums/role-enum.filter';
+import { FindReservaDto } from 'src/reserva/Validation/find-reserva.dto';
+import { CreateReservaDto } from 'src/reserva/Validation';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -19,17 +21,21 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
 
+  // Query
+  /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
+
   async ExistEmail(email: string) {
     if (
-      (await this.usuario.count({
+      await this.usuario.count({
         where: {
           email,
         },
-      }))
+      })
     ) {
       throw new ConflictException('Já existe um usuário com esse email');
     }
   }
+
   async ExistLogin(data: LoginDto) {
     const user = await this.GetUsuarioByEmail(data.email);
     if (!(await bcrypt.compare(data.password, user.password))) {
@@ -178,10 +184,60 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   // Reserva
   /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
-  CreateReserva(data: any) {
+  CreateReserva(data: CreateReservaDto) {
     return this.reserva.create({
-      data: data,
+      data,
     });
+  }
+
+  GetReservaDisponivel(data: FindReservaDto) {
+    return this.mesa.findMany({
+      where: {
+        Reserva: {
+          every: {
+            NOT: {
+              data: data.data,
+            },
+          },
+        },
+      },
+      select: {},
+      orderBy: {
+        lugares: 'asc',
+      },
+    });
+  }
+
+  GetMesasReserva(mesas: Array<Mesa>, pessoas: number) : Array<string> {
+    const mesa = mesas.find((mesa) => mesa.lugares == pessoas);
+    if (mesa) {
+      return [mesa.id];
+    } else {
+      try {
+        let somaLugaresReserva = -1;
+        let arrayReserva = [];
+        for (let i = mesas.length - 1; i >= 0; i--) {
+          for (let j = 0; j < mesas.length - 1; j++) {
+            const somaLugares = mesas[i].lugares + mesas[j].lugares;
+            if (somaLugares === pessoas) {
+              return [mesas[i].id, mesas[j].id];
+            }else if(somaLugares > pessoas && somaLugares < somaLugaresReserva || somaLugaresReserva == -1){
+              arrayReserva = [mesas[i].id, mesas[j].id];
+            }
+          }
+        }
+
+        const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
+
+        if(mesaReserva.lugares <=  somaLugaresReserva){
+          return [mesaReserva.id];
+        }else{
+          return arrayReserva;
+        }
+      } catch {
+
+      }
+    }
   }
 
   GetReservaById(id: string) {

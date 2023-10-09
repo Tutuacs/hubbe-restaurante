@@ -11,10 +11,11 @@ datasource db {
 }
 
 model Mesa {
-  id      String    @id @default(auto()) @map("_id") @db.ObjectId
-  numero  Int       @unique
-  lugares Int?      @default(2)
-  Reserva Reserva[]
+  id        String    @id @default(auto()) @map("_id") @db.ObjectId
+  numero    Int       @unique
+  lugares   Int?      @default(2)
+  Reserva   Reserva[] @relation(fields: [reservaId], references: [id])
+  reservaId String[]  @db.ObjectId
 }
 
 model Usuario {
@@ -27,10 +28,10 @@ model Usuario {
 
 model Reserva {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  fecha     DateTime
-  mesa      Mesa     @relation(fields: [mesaId], references: [id])
-  mesaId    String   @db.ObjectId
-  usuario   Usuario  @relation(fields: [usuarioId], references: [id])
+  data      DateTime
+  Mesa      Mesa[]   @relation(fields: [mesaId], references: [id])
+  mesaId    String[] @db.ObjectId
+  Usuario   Usuario  @relation(fields: [usuarioId], references: [id])
   usuarioId String   @db.ObjectId
   pessoas   Int?
 }

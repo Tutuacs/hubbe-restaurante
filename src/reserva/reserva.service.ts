@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreateReservaDto } from './Validation';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { FindReservaDto } from './Validation/find-reserva.dto';
 
 @Injectable()
 export class ReservaService{
@@ -9,6 +10,10 @@ export class ReservaService{
 
   create(data: CreateReservaDto) {
     return this.prisma.CreateReserva(data);
+  }
+
+  disponiveis(data: FindReservaDto){
+    return this.prisma.GetReservaDisponivel(data);
   }
 
   findAll() {

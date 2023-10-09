@@ -1,7 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { MesaService } from './mesa.service';
 import { CreateMesaDto, UpdateMesaDto } from './Validation';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { RoleGuard } from 'src/guards/role.guard';
+import { Role } from 'src/enums/role-enum.filter';
+import { Roles } from 'src/decorator/role.decorator';
 
+@UseGuards(AuthGuard, RoleGuard)
+@Roles(Role.Admin)
 @Controller('mesa')
 export class MesaController {
   constructor(private readonly mesaService: MesaService) {}
