@@ -26,6 +26,11 @@ export class AuthService {
           audience: `${env.JWT_AUDIENCE}`,
         },
       ),
+      user: {
+        id: user.id,
+        email: user.email,
+        role: user.role,
+      }
     };
   }
 

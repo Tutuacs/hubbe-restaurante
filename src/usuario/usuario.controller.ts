@@ -4,10 +4,11 @@ import { CreateUsuarioDto } from './Validation/create-usuario.dto';
 import { UpdateUsuarioDto } from './Validation/update-usuario.dto';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { RoleGuard } from 'src/guards/role.guard';
-import { Acess } from 'src/decorator/role.decorator';
-import { Role } from 'src/decorator/role-enum.filter';
+import { Roles } from 'src/decorator/role.decorator';
+import { Role } from 'src/enums/role-enum.filter';
+import { Token } from 'src/decorator/user.decorator';
 
-@UseGuards(RoleGuard, AuthGuard)
+@UseGuards(AuthGuard, RoleGuard)
 @Controller('usuario')
 export class UsuarioController {
   constructor(private readonly usuarioService: UsuarioService) {}
@@ -17,9 +18,9 @@ export class UsuarioController {
     return this.usuarioService.create(data);
   } 
   
-  @Acess(Role.Pode)
+  @Roles(Role.User, Role.Admin)
   @Get()
-  findAll() {
+  findAll(@Token() user: any) {
     return this.usuarioService.findAll();
   }
 

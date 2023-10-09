@@ -11,7 +11,7 @@ import { LoginDto } from 'src/auth/Validation';
 import { CreateMesaDto, UpdateMesaDto } from 'src/mesa/Validation';
 import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuario/Validation';
 import * as bcrypt from 'bcrypt';
-import { Role } from 'src/decorator/role-enum.filter';
+import { Role } from 'src/enums/role-enum.filter';
 
 @Injectable()
 export class PrismaService extends PrismaClient implements OnModuleInit {
@@ -32,7 +32,6 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
   async ExistLogin(data: LoginDto) {
     const user = await this.GetUsuarioByEmail(data.email);
-    console.log(user);
     if (!(await bcrypt.compare(data.password, user.password))) {
       throw new UnauthorizedException('Senha incorreta');
     } else {
