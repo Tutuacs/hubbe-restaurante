@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from './Validation';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -43,7 +43,7 @@ export class AuthService {
       });
       return data;
     } catch (error) {
-      throw new Error(error);
+      throw new UnauthorizedException(error);
     }
   }
 

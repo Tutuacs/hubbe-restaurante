@@ -1,9 +1,10 @@
-import { IsBoolean, IsISO8601, IsNotEmpty, IsNumber, IsOptional } from "class-validator";
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, Min, MinDate } from "class-validator";
 
 export class CreateAnyReservaDto {
 
     @IsNotEmpty()
-    @IsISO8601({strictSeparator: true},{message: 'O campo data deve ser escrito usando separadores na ordem: ano/mes/dia -> YYYY/MM/DD'})
+    @IsDate({message: "O campo Data deve ser escrito: ano-mes-dia => YYYY-MM-DD"})
+    @MinDate(new Date(), {message: "A data deve ser maior que a data atual, como não pedimos horario obrigatoriamente as reservas duram o dia todo."})
     data: Date;
 
     @IsNotEmpty()
@@ -12,9 +13,12 @@ export class CreateAnyReservaDto {
 
     @IsOptional()
     @IsNumber({},{message: 'O campo pessoas deve ser um número'})
+    @Min(1, {each: true})
     pessoas: number;
-
+    
     @IsOptional()
-    mesas: Array<number>;
+    @IsNumber({}, {each: true})
+    @Min(1, {each: true})
+    mesas: number[];
 
 }

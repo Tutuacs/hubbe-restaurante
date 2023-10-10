@@ -30,7 +30,7 @@ export class UsuarioController {
   }
   
   @Get(':id')
-  findOne(@Param('id') id: string, @Token('id') token: { id: string, role: Role }) {
+  findOne(@Param('id') id: string, @Token() token: { id: string, role: Role }) {
     return this.usuarioService.findOne(id, token);
   }
 

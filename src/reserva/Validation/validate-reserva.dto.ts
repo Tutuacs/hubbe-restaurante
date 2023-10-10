@@ -1,9 +1,9 @@
-import { IsBoolean, IsISO8601, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested } from "class-validator";
+import { IsBoolean, IsDate, IsNotEmpty, IsNumber, IsOptional, IsString, MaxLength, MinLength, ValidateNested } from "class-validator";
 
 export class ValidateReservaDto {
 
     @IsNotEmpty()
-    @IsISO8601({strictSeparator: true},{message: 'O campo data deve ser escrito usando separadores na ordem: ano/mes/dia -> YYYY/MM/DD'})
+    @IsDate({message: "O campo Data deve ser escrito: ano-mes-dia => YYYY-MM-DD"},)
     data: Date;
 
     @IsNotEmpty()

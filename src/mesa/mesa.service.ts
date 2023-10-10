@@ -4,8 +4,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class MesaService {
-
-  constructor(private readonly prisma: PrismaService){}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: CreateMesaDto) {
     await this.prisma.ExistMesaNumber(data.numero);
@@ -16,15 +15,18 @@ export class MesaService {
     return this.prisma.GetAllMesas();
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
+    await this.prisma.ExistMesaId(id);
     return this.prisma.GetMesaById(id);
   }
 
-  update(id: string, data: UpdateMesaDto) {
+  async update(id: string, data: UpdateMesaDto) {
+    await this.prisma.ExistMesaId(id);
     return this.prisma.UpdateMesa(id, data);
   }
 
-  remove(id: string) {
+  async remove(id: string) {
+    await this.prisma.ExistMesaId(id);
     return this.prisma.DeleteMesa(id);
   }
 }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUsuarioDto } from './Validation/create-usuario.dto';
 import { UpdateUsuarioDto } from './Validation/update-usuario.dto';
 import { PrismaService } from 'src/prisma/prisma.service';
@@ -17,35 +17,48 @@ export class UsuarioService {
     return this.prisma.GetAllUsuario();
   }
 
-  findAllReservas(token: { id: string, role: Role }) {
-    if(token.role != Role.Admin){
+  findAllReservas(token: { id: string; role: Role }) {
+    if (token.role != Role.Admin) {
       return this.prisma.GetAllReservaByUsuario(token.id);
     }
     return this.prisma.GetAllReserva();
   }
 
-  findOne(id: string, token: { id: string, role: Role}) {
-    if(token.role != Role.Admin){
-      if(token.id != id)
-        throw new Error("Você não tem permissão para visualizar este usuário.");
+  async findOne(id: string, token: { id: string; role: Role }) {
+    if (token.role != Role.Admin) {
+      if (token.id != id)
+        throw new UnauthorizedException(
+          'Você não tem permissão para visualizar este usuário.',
+        );
       return this.prisma.GetUsuarioById(id);
     }
+    await this.prisma.ExistUsuarioId(id);
     return this.prisma.GetUsuarioById(id);
   }
 
-  update(id: string, data: UpdateUsuarioDto, token: { id: string, role: Role}) {
-    if(token.role != Role.Admin){
-      if(token.id != id)
-        throw new Error("Você não tem permissão para editar este usuário.");
+  async update(
+    id: string,
+    data: UpdateUsuarioDto,
+    token: { id: string; role: Role },
+  ) {
+    if (token.role != Role.Admin) {
+      if (token.id != id)
+        throw new UnauthorizedException(
+          'Você não tem permissão para editar este usuário.',
+        );
       return this.prisma.UpdateUsuario(id, data);
-    }else{
+    } else {
+      await this.prisma.ExistUsuarioId(id);
       return this.prisma.UpdateUsuario(id, data);
     }
   }
 
-  remove(id: string, token: { id: string}) {
-    if(id != token.id)
-      throw new Error("Você não tem permissão para deletar este usuário.");
+  async remove(id: string, token: { id: string }) {
+    if (id != token.id)
+      throw new UnauthorizedException(
+        'Você não tem permissão para deletar este usuário.',
+      );
+    await this.prisma.ExistUsuarioId(id);
     return this.prisma.DeleteUsuario(id);
   }
 }
