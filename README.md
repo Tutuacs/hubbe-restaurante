@@ -30,13 +30,11 @@ $ npm run prod
 
 ## Tecnologias
 
-```bash
  [NestJS]: Um framework JavaScript para construção de aplicações web escaláveis e eficientes.
  [PrismaORM]: Um ORM para MongoDB que facilita a interação com o banco de dados.
  [Swagger]: Uma ferramenta para documentação de APIs.
  [MongoDB]: Um banco de dados NoSQL baseado em documentos.
  [Insomnia]: Uma ferramenta de teste de APIs.
-```
 
 ## Descrição do Projeto
 
