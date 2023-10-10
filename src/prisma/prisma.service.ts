@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
   NotFoundException,
 } from '@nestjs/common';
-import { Mesa, PrismaClient } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 import { LoginDto } from 'src/auth/Validation';
 import { CreateMesaDto, UpdateMesaDto } from 'src/mesa/Validation';
 import { CreateUsuarioDto, UpdateUsuarioDto } from 'src/usuario/Validation';
@@ -299,9 +299,11 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     reserva.pessoas = data.pessoas;
     reserva.usuarioId = id;
     reserva.mesaId = await this.GetMesasByNumeros(data.mesas, data.data);
-    if (reserva.mesaId.length == data.mesas.length)
+    if (reserva.mesaId && reserva.mesaId.length == data.mesas.length)
       return this.CreateReserva(reserva);
-    throw new NotFoundException("Parece que você passou o número de uma mesa não disponivel, verifique as mesas novamente e tente novamente.");
+    throw new NotFoundException(
+      'Parece que você passou o número de uma mesa não disponivel, verifique as mesas novamente e tente novamente.',
+    );
   }
 
   GetReservaDisponivel(data: FindReservaDto) {
@@ -335,7 +337,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     if (mesa) {
       return [mesa.id];
     } else {
-      let somaLugaresReserva = 0;
+      const somaLugaresReserva = 0;
       let arrayReserva = [];
       for (let i = mesas.length - 1; i >= 0; i--) {
         for (let j = 0; j < mesas.length - 1; j++) {
@@ -360,7 +362,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
       const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
 
-      if (mesaReserva && mesaReserva.lugares <= somaLugaresReserva) {
+      if (mesaReserva && mesaReserva.lugares < somaLugaresReserva) {
         return [mesaReserva.id];
       } else {
         return arrayReserva;
@@ -402,7 +404,22 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   GetAllReserva() {
-    return this.reserva.findMany();
+    return this.reserva.findMany({
+      select:{
+        id: true,
+        data: true,
+        pessoas: true,
+        Mesa:{
+          select:{
+            numero: true,
+            lugares: true,
+          }
+        },
+      },
+      orderBy:{
+        data: 'desc'
+      }
+    });
   }
 
   GetAllReservaByUsuario(id: string) {
@@ -410,6 +427,20 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       where: {
         usuarioId: id,
       },
+      select:{
+        id: true,
+        data: true,
+        pessoas: true,
+        Mesa:{
+          select:{
+            numero: true,
+            lugares: true,
+          }
+        },
+      },
+      orderBy:{
+        data: 'desc'
+      }
     });
   }
 

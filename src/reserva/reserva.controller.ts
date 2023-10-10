@@ -3,7 +3,6 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
   UseGuards,
@@ -29,23 +28,23 @@ export class ReservaController {
     return this.reservaService.create(data, type, id);
   }
 
-  @Post('disponiveis')
+  @Get('disponiveis')
   disponiveis(@Body() data: FindReservaDto) {
     return this.reservaService.disponiveis(data);
   }
 
   @Get()
   findAll(@Token() token: { id: string; role: Role }) {
-    return this.reservaService.findAll();
+    return this.reservaService.findAll(token);
   }
 
   @Get(':id')
   findOne(@Param('id') id: string, @Token() token: { id: string; role: Role }) {
-    return this.reservaService.findOne(id);
+    return this.reservaService.findOne(id, token);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string, @Token() token: { id: string; role: Role }) {
-    return this.reservaService.remove(id);
+    return this.reservaService.remove(id, token);
   }
 }

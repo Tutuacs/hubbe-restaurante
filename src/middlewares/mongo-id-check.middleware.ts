@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from 'express';
 export class MongoIdCheckMiddleware implements NestMiddleware {
   use(req: Request, res: Response, next: NextFunction) {
     const id = req.params.id;
-    if (id && id.length !== 24) {
+    if (id && id.length !== 24 && req.path !== '/reserva/disponiveis') {
       throw new BadRequestException('Invalid ID!');
     }
     next();
