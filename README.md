@@ -30,11 +30,15 @@ $ npm run prod
 
 ## Tecnologias
 
- [NestJS]: Um framework JavaScript para construção de aplicações web escaláveis e eficientes.
- [PrismaORM]: Um ORM para MongoDB que facilita a interação com o banco de dados.
- [Swagger]: Uma ferramenta para documentação de APIs.
- [MongoDB]: Um banco de dados NoSQL baseado em documentos.
- [Insomnia]: Uma ferramenta de teste de APIs.
+ [NestJS](https://github.com/nestjs/nest): Um framework JavaScript para construção de aplicações web escaláveis e eficientes.
+
+ [PrismaORM](https://github.com/prisma/prisma): Um ORM para MongoDB que facilita a interação com o banco de dados.
+
+ [Swagger](https://github.com/swagger-api/swagger-core) Uma ferramenta para documentação de APIs.
+
+ [MongoDB](https://github.com/mongodb/mongo) Um banco de dados NoSQL baseado em documentos.
+
+ [Insomnia](https://github.com/Kong/insomnia) Uma ferramenta de teste de APIs.
 
 ## Descrição do Projeto
 
@@ -66,7 +70,7 @@ Para criar uma reserva o usuário pode usar o modo automático, desta forma, dev
 
 É possivel usar o Sweagger na rota: http://localhost:3000/Arthur_Silva
 
-O Sweagger não foi configurado de forma mais completa como no Insomnia
+O Swagger não foi configurado de forma mais completa como no Insomnia
 
 ## Support
 
