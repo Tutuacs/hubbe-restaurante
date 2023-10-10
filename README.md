@@ -5,23 +5,6 @@
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
 ## Description
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
@@ -45,18 +28,40 @@ $ npm run dev
 $ npm run prod
 ```
 
-## Test
-
+## Tecnologias
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+$ NestJS: Um framework JavaScript para construção de aplicações web escaláveis e eficientes.
+$ PrismaORM: Um ORM para MongoDB que facilita a interação com o banco de dados.
+$ Swagger: Uma ferramenta para documentação de APIs.
+$ MongoDB: Um banco de dados NoSQL baseado em documentos.
+$ Insomnia: Uma ferramenta de teste de APIs.
 ```
+
+##Descrição do Projeto
+
+  O projeto foi desenvolvido para um processo seletivo da empresa "Hubbe", o projeto baseava-se em fazer uma API_REST que realizasse reservas de mesa para restaurantes, nesta versão estou 
+  usando PrismaORM juntamente com um banco MongoDB que eu criei em uma conta de gmail feita própriamente para a realização deste projeto, configurei um usuário para o projeto, ao tentar 
+  conectar no mongoCompas com o mesmo login só é possivel ver a DataBase: "HubbeDb", sem ter acesso a suas coleções, um usuário pode alterar o usuario administrador padrão criado ao rodar
+   o projeto contudo o sistema está pronto para caso isso ocorra, o usuário administrador padrão sempre será:
+   ```bash
+   $ email: admin@admin.com
+   $ password: Hubbe123
+   ```
+   ao logar como administrador todas as rotas são acessiveis, contudo nem todas as ações são realizadas (excluir um usuário sem ser o que está logado, excluir a reserva de outro usuário...), usuários administradores podm receber dados diferentes de usuários normais (ver todas as reservas, incluindo a de outros usuários...).Um token fica Valido por 1Dia.
+   algumas rotas possuem funcionalidades diferentes, exemplo:
+   ```bash
+    POST: reserva/create/:type
+    type : " auto | manual "
+   ```
+   Para criar uma reserva o usuário pode usar o modo automático, desta forma, deve ser informado o numero de pessoas, data da reserva e se o usuário aceita juntar mesas para atender o número de pessoas, caso uma mesa não se encaixe com a descrição é informado que não existem mesas disponíveis no horário selecionado e que o usuário pode terntar efetuar a reserva pelo modo manual, com isso ao acessar a rota:
+  ```bash
+    GET: reserva/disponiveis
+   ```
+   É possivel ver as mesas disponíveis em um determinado horário(dia), o número das messas poderá ser passado na rota manual para após validar os dados efetuar a reserva desejada se possivel.
+
+   É possivel usar o Sweagger na rota: http://localhost:3000/Arthur_Silva
+
+   O Sweagger não foi configurado de forma mais completa como no Insomnia
 
 ## Support
 
