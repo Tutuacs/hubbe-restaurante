@@ -359,8 +359,7 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       select: {
         id: true,
         numero: true,
-        lugares: true,
-        reservaId: false,
+        lugares: true
       },
     });
   }

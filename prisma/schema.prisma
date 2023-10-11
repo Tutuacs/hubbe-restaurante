@@ -6,20 +6,19 @@ generator client {
 }
 
 datasource db {
-  provider = "mongodb"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model Mesa {
-  id        String    @id @default(auto()) @map("_id") @db.ObjectId
-  numero    Int       @unique
-  lugares   Int?      @default(2)
-  Reserva   Reserva[] @relation(fields: [reservaId], references: [id])
-  reservaId String[]  @db.ObjectId
+  id      String    @id @default(uuid())
+  numero  Int       @unique
+  lugares Int?      @default(2)
+  Reserva Reserva[]
 }
 
 model Usuario {
-  id       String    @id @default(auto()) @map("_id") @db.ObjectId
+  id       String    @id @default(uuid())
   email    String    @unique
   password String
   role     Boolean   @default(false)
@@ -27,12 +26,11 @@ model Usuario {
 }
 
 model Reserva {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  id        String   @id @default(uuid())
   data      DateTime
   dataEnd   DateTime
-  Mesa      Mesa[]   @relation(fields: [mesaId], references: [id])
-  mesaId    String[] @db.ObjectId
+  Mesa      Mesa[]
   Usuario   Usuario  @relation(fields: [usuarioId], references: [id])
-  usuarioId String   @db.ObjectId
+  usuarioId String
   pessoas   Int?
 }
