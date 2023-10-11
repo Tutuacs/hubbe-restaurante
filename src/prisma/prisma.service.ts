@@ -332,33 +332,23 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   async GetReservaDisponivel(data: FindReservaDto) {
+    const dataConvertida = new Date(data.data);
+    dataConvertida.setHours(dataConvertida.getHours() +2);
+    data.dataEnd = dataConvertida;
+    console.log(data);
     return this.mesa.findMany({
       where: {
         NOT: {
           Reserva: {
-            some: {
-              OR: [
+            every: {
+              AND:[
                 {
-                  data: {
-                    gte: data.data,
-                    lte: data.dataEnd,
-                  },
+                  data: { lt: data.dataEnd },
                 },
                 {
-                  dataEnd: {
-                    gte: data.data,
-                    lte: data.dataEnd,
-                  },
+                  data: { gt: data.data },
                 },
-                {
-                  data: {
-                    lte: data.data,
-                  },
-                  dataEnd: {
-                    gte: data.dataEnd,
-                  },
-                },
-              ],
+              ]
             },
           },
         },

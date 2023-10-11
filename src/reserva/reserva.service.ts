@@ -26,7 +26,10 @@ export class ReservaService {
     }
   }
 
-  disponiveis(data: FindReservaDto) {
+  async disponiveis(data: FindReservaDto) {
+    const dataConvertida = new Date(data.data);
+    dataConvertida.setHours(dataConvertida.getHours() -4);
+    data.data = dataConvertida;
     return this.prisma.GetReservaDisponivel(data);
   }
 

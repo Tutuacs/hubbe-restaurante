@@ -28,49 +28,57 @@ $ npm run dev
 $ npm run prod
 ```
 
-## Tecnologias
+## Technologies
 
- [NestJS](https://github.com/nestjs/nest): Um framework JavaScript para construção de aplicações web escaláveis e eficientes.
+ [NestJS](https://github.com/nestjs/nest): A JavaScript framework for building scalable and efficient web applications.
 
- [PrismaORM](https://github.com/prisma/prisma): Um ORM para MongoDB que facilita a interação com o banco de dados.
+ [PrismaORM](https://github.com/prisma/prisma): An ORM for MongoDB that simplifies database interaction.
 
- [Swagger](https://github.com/swagger-api/swagger-core) Uma ferramenta para documentação de APIs.
+ [Swagger](https://github.com/swagger-api/swagger-core) A tool for API documentation.
 
- [MongoDB](https://github.com/mongodb/mongo) Um banco de dados NoSQL baseado em documentos.
+ [MongoDB](https://github.com/mongodb/mongo) A document-based NoSQL database.
 
- [Insomnia](https://github.com/Kong/insomnia) Uma ferramenta de teste de APIs.
+ [Insomnia](https://github.com/Kong/insomnia) An API testing tool.
 
-## Descrição do Projeto
+## Project Description
 
-O projeto foi desenvolvido para um processo seletivo da empresa "Hubbe", o projeto baseava-se em fazer uma API_REST que realizasse reservas de mesa para restaurantes, nesta versão estou
-usando PrismaORM juntamente com um banco MongoDB que eu criei em uma conta de gmail feita própriamente para a realização deste projeto, configurei um usuário para o projeto, ao tentar
-conectar no mongoCompas com o mesmo login só é possivel ver a DataBase: "HubbeDb", sem ter acesso a suas coleções, um usuário pode alterar o usuario administrador padrão criado ao rodar
-o projeto contudo o sistema está pronto para caso isso ocorra, o usuário administrador padrão sempre será:
+The project was developed for a selection process at the "Hubbe" company. The project involved creating a REST API for restaurant table reservations. In this version, I am using PrismaORM along with a MongoDB database that I created in a Gmail account specifically for this project. I configured a user for the project, and when trying to connect to MongoDB Compass with the same login, it's only possible to see the "HubbeDb" database without access to its collections. A user can change the default administrator user created when running the project. However, the system is ready in case this happens, and the default administrator user will always be:
 
 ```bash
 $ email: admin@admin.com
 $ password: Hubbe123
 ```
 
-ao logar como administrador todas as rotas são acessiveis, contudo nem todas as ações são realizadas (excluir um usuário sem ser o que está logado, excluir a reserva de outro usuário...), usuários administradores podm receber dados diferentes de usuários normais (ver todas as reservas, incluindo a de outros usuários...).Um token fica Valido por 1Dia.
-algumas rotas possuem funcionalidades diferentes, exemplo:
+When logging in as an administrator, all routes are accessible, but not all actions can be performed (e.g., deleting a user who is not the logged-in user, deleting another user's reservation, etc.). Administrator users can receive different data from regular users (e.g., view all reservations, including those of other users). A token remains valid for 1 day.
+
+Some routes have different functionalities. For example:
 
 ```bash
  POST: reserva/create/:type
  type : " auto | manual "
 ```
 
-Para criar uma reserva o usuário pode usar o modo automático, desta forma, deve ser informado o numero de pessoas, data da reserva e se o usuário aceita juntar mesas para atender o número de pessoas, caso uma mesa não se encaixe com a descrição é informado que não existem mesas disponíveis no horário selecionado e que o usuário pode terntar efetuar a reserva pelo modo manual, com isso ao acessar a rota:
+To create a reservation, the user can use the automatic mode, in which they need to provide the number of people, the reservation date, and whether the user accepts combining tables to accommodate the specified number of people. If a table doesn't match the description, it will be indicated that there are no available tables at the selected time, and the user can try making a reservation manually. In this case, when accessing the route:
 
 ```bash
   GET: reserva/disponiveis
 ```
 
-É possivel ver as mesas disponíveis em um determinado horário(dia), o número das messas poderá ser passado na rota manual para após validar os dados efetuar a reserva desejada se possivel.
+It is possible to view available tables at a specific time. The table numbers can be passed to the manual route to validate the data and make the desired reservation if possible.
 
-É possivel usar o Sweagger na rota: http://localhost:3000/Arthur_Silva
+You can use Swagger at the following route: http://localhost:3000/Arthur_Silva.
 
-O Swagger não foi configurado de forma mais completa como no Insomnia
+Swagger is not configured as comprehensively as in Insomnia. The repository contains a file that can be imported into Insomnia, along with its variables: http (default URL), token (Admin Token), and testToken (User Token).
+
+## How to Test
+
+Choose between using Swagger or Insomnia. If you choose Insomnia (RECOMMENDED), import the "HubbeRestaurante_Insomnia.json" file into the project's root folder and create a new collection in Insomnia. Start the application with:
+
+```bash
+  $ npm install / yarn add
+  $ npm run dev / npm run prod
+```
+After starting the application, a default administrator user will be created unless someone (the previously mentioned administrator user) changes it. Update the token variable (valid for 1 day) in Insomnia by logging in as an administrator. With this token, you can create administrator or customer users using the user/create routes. You can also register as a customer by creating "a new account." An administrator can create, edit tables, view all reservations, and create administrative users. A regular user can delete their reservations, view available tables for a specific time, edit their information, and create reservations. There are custom validations for all fields, explaining cases where the user may have made mistakes.
 
 ## Support
 

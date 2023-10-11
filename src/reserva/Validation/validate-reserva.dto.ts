@@ -10,11 +10,11 @@ import {
 export class ValidateReservaDto {
   @IsNotEmpty()
   @IsDate({
-    message: 'O campo Data deve ser escrito: ano-mes-diaTHora24 => YYYY-MM-DDTHora24, digite uma hora entre 00 e 23 após o T',
+    message: 'O campo Data deve ser escrito: ano-mes-diaTHora24:Minuto:Segundo => YYYY-MM-DDTHH:MM:SS, digite uma hora entre 00 e 23 após o T',
   })
   @MinDate(new Date(), {
     message:
-      'A data deve ser maior que a data atual, como não pedimos horario obrigatoriamente as reservas duram o dia todo.',
+      'A data deve ser maior que a data atual, fique atento ao digitar o horário da reserva, supomos que cada reseva tenha no maximo 1hora de ocupação na mesa.',
   })
   data: Date;
 
