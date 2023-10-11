@@ -29,6 +29,7 @@ model Usuario {
 model Reserva {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   data      DateTime
+  dataEnd   DateTime
   Mesa      Mesa[]   @relation(fields: [mesaId], references: [id])
   mesaId    String[] @db.ObjectId
   Usuario   Usuario  @relation(fields: [usuarioId], references: [id])

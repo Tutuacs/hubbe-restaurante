@@ -234,6 +234,9 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
   }
 
   CreateReserva(data: CreateReservaDto) {
+    const dataConvertida = new Date(data.data);
+    dataConvertida.setHours(dataConvertida.getHours() + 1);
+    data.dataEnd = dataConvertida;
     return this.reserva.create({
       data,
       select: {
@@ -262,13 +265,35 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     const filter = new FindReservaDto();
     filter.data = data.data;
     filter.pessoas = data.pessoas;
+    const dataConvertida = new Date(data.data);
+    dataConvertida.setHours(dataConvertida.getHours() + 1);
+    filter.dataEnd = dataConvertida;
     const mesasDisponiveis = await this.GetReservaDisponivel(filter);
     if (mesasDisponiveis.length == 0) {
       throw new NotFoundException(
         'Não encontramos mesas disponiveis para essa data, tente outra data ou entre em contato com o restaurante.',
       );
+    } else if (mesasDisponiveis.length == 1) {
+      const mesaUnica = mesasDisponiveis.find(
+        (mesa) => mesa.lugares >= data.pessoas,
+      );
+      if (mesaUnica) {
+        reserva.mesaId = [mesaUnica.id];
+        return this.CreateReserva(reserva);
+      } else {
+        throw new NotFoundException(
+          'Não encontramos mesas disponiveis para essa data, tente outra data ou entre em contato com o restaurante.',
+        );
+      }
     }
     if (data.juntarMesas) {
+      const mesaUnica = mesasDisponiveis.find(
+        (mesa) => mesa.lugares == data.pessoas,
+      );
+      if (mesaUnica) {
+        reserva.mesaId = [mesaUnica.id];
+        return this.CreateReserva(reserva);
+      }
       reserva.mesaId = this.GetMesasReserva(mesasDisponiveis, data.pessoas);
       return this.CreateReserva(reserva);
     } else {
@@ -283,12 +308,12 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       const mesaReserva = mesasDisponiveis.find(
         (mesa) => mesa.lugares > data.pessoas,
       );
-      if (mesaReserva) {
+      if (!mesaReserva) {
         throw new NotFoundException(
           'Não encontramos mesas disponiveis para essa data, tente outra data ou entre em contato com o restaurante.',
         );
       }
-      reserva.mesaId = [mesa.id];
+      reserva.mesaId = [mesaReserva.id];
       return this.CreateReserva(reserva);
     }
   }
@@ -306,13 +331,34 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     );
   }
 
-  GetReservaDisponivel(data: FindReservaDto) {
+  async GetReservaDisponivel(data: FindReservaDto) {
     return this.mesa.findMany({
       where: {
-        Reserva: {
-          every: {
-            NOT: {
-              data: data.data,
+        NOT: {
+          Reserva: {
+            some: {
+              OR: [
+                {
+                  data: {
+                    gte: data.data,
+                    lte: data.dataEnd,
+                  },
+                },
+                {
+                  dataEnd: {
+                    gte: data.data,
+                    lte: data.dataEnd,
+                  },
+                },
+                {
+                  data: {
+                    lte: data.data,
+                  },
+                  dataEnd: {
+                    gte: data.dataEnd,
+                  },
+                },
+              ],
             },
           },
         },
@@ -337,35 +383,41 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     if (mesa) {
       return [mesa.id];
     } else {
-      const somaLugaresReserva = 0;
+      let somaLugaresReserva = 0;
+      let somaLugares: number;
       let arrayReserva = [];
-      for (let i = mesas.length - 1; i >= 0; i--) {
-        for (let j = 0; j < mesas.length - 1; j++) {
-          if (mesas[i] == mesas[j] || j >= i) {
-            break;
-          }
-          const somaLugares = mesas[i].lugares + mesas[j].lugares;
-          if (somaLugares === pessoas) {
-            return [mesas[i].id, mesas[j].id];
-          } else if (
-            (somaLugares > pessoas && somaLugares < somaLugaresReserva) ||
-            somaLugaresReserva == 0
-          ) {
-            arrayReserva = [mesas[i].id, mesas[j].id];
-          } else {
-            throw new NotFoundException(
-              'Não encontramos mesas com essa quantidade de lugares disponiveis para reservar tente passar o numero das mesas desejadas manualmente',
-            );
+      if (mesas.length == 1 && mesas[0].lugares > pessoas) {
+        return [mesas[0].id];
+      } else {
+        for (let i = mesas.length - 1; i >= 0; i--) {
+          for (let j = 0; j < mesas.length - 1; j++) {
+            if (mesas[i] == mesas[j] || j >= i) {
+              break;
+            }
+            somaLugares = mesas[i].lugares + mesas[j].lugares;
+            if (somaLugares === pessoas) {
+              return [mesas[i].id, mesas[j].id];
+            } else if (
+              (somaLugares > pessoas && somaLugares < somaLugaresReserva) ||
+              somaLugaresReserva == 0
+            ) {
+              arrayReserva = [mesas[i], mesas[j]];
+              somaLugaresReserva = somaLugares;
+            }
           }
         }
-      }
 
-      const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
+        const mesaReserva = mesas.find((mesa) => mesa.lugares > pessoas);
 
-      if (mesaReserva && mesaReserva.lugares < somaLugaresReserva) {
-        return [mesaReserva.id];
-      } else {
-        return arrayReserva;
+        if (
+          mesaReserva &&
+          mesaReserva.lugares <
+            arrayReserva[1].lugares + arrayReserva[0].lugares
+        ) {
+          return [mesaReserva.id];
+        } else {
+          return [arrayReserva[0].id, arrayReserva[1].id];
+        }
       }
     }
   }
@@ -405,20 +457,21 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
 
   GetAllReserva() {
     return this.reserva.findMany({
-      select:{
+      select: {
         id: true,
         data: true,
+        dataEnd: true,
         pessoas: true,
-        Mesa:{
-          select:{
+        Mesa: {
+          select: {
             numero: true,
             lugares: true,
-          }
+          },
         },
       },
-      orderBy:{
-        data: 'desc'
-      }
+      orderBy: {
+        data: 'desc',
+      },
     });
   }
 
@@ -427,20 +480,21 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
       where: {
         usuarioId: id,
       },
-      select:{
+      select: {
         id: true,
         data: true,
+        dataEnd: true,
         pessoas: true,
-        Mesa:{
-          select:{
+        Mesa: {
+          select: {
             numero: true,
             lugares: true,
-          }
+          },
         },
       },
-      orderBy:{
-        data: 'desc'
-      }
+      orderBy: {
+        data: 'desc',
+      },
     });
   }
 

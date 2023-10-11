@@ -7,7 +7,10 @@ import { Role } from 'src/enums/role-enum.filter';
 export class ReservaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  create(data: CreateAnyReservaDto, type: string, id: string) {
+  async create(data: CreateAnyReservaDto, type: string, id: string) {
+    const dataConvertida = new Date(data.data);
+    dataConvertida.setHours(dataConvertida.getHours() - 3);
+    data.data = dataConvertida;
     if (type == 'auto') {
       return this.prisma.CreateReservaAuto(data, id);
     } else if (type == 'manual') {

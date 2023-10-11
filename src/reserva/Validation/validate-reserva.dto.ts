@@ -10,7 +10,7 @@ import {
 export class ValidateReservaDto {
   @IsNotEmpty()
   @IsDate({
-    message: 'O campo Data deve ser escrito: ano-mes-dia => YYYY-MM-DD',
+    message: 'O campo Data deve ser escrito: ano-mes-diaTHora24 => YYYY-MM-DDTHora24, digite uma hora entre 00 e 23 após o T',
   })
   @MinDate(new Date(), {
     message:
