@@ -42,14 +42,14 @@ $ npm run prod
 
 ## Project Description
 
-The project was developed for a selection process at the "Hubbe" company. The project involved creating a REST API for restaurant table reservations. In this version, I am using PrismaORM along with a MongoDB database that I created in a Gmail account specifically for this project. I configured a user for the project, and when trying to connect to MongoDB Compass with the same login, it's only possible to see the "HubbeDb" database without access to its collections. A user can change the default administrator user created when running the project. However, the system is ready in case this happens, and the default administrator user will always be:
+The project was developed for a selection process at the "Hubbe" company. The project involved creating a REST API for restaurant table reservations. In this version, I am using PrismaORM along with a MongoDB database that I created in a Gmail account specifically for this project. I configured a user for the project, and when trying to connect to MongoDB Compass with the same login, it's only possible to see the "HubbeDb" database without access to its collections. A user can change the default administrative user created when running the project. However, the system is ready in case this happens, and the default administrative user will always be:
 
 ```bash
 $ email: admin@admin.com
 $ password: Hubbe123
 ```
 
-When logging in as an administrator, all routes are accessible, but not all actions can be performed (e.g., deleting a user who is not the logged-in user, deleting another user's reservation, etc.). Administrator users can receive different data from regular users (e.g., view all reservations, including those of other users). A token remains valid for 1 day.
+When logging in as an administrator, all routes are accessible, but not all actions can be performed (Ex: deleting a user who is not the logged-in user, deleting another user's reservation, etc.). Administrator users can receive different data from regular users (Ex: view all reservations, including those of other users). A token remains valid for 1 day.
 
 Some routes have different functionalities. For example:
 
