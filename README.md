@@ -12,7 +12,7 @@
 ## Installation
 
 ```bash
-$ npm install
+$ npm install 
 ```
 
 ## Running the app
@@ -70,13 +70,12 @@ You can use Swagger at the following route: http://localhost:3000/Arthur_Silva.
 
 Swagger is not configured as comprehensively as in Insomnia. The repository contains a file that can be imported into Insomnia, along with its variables: http (default URL), token (Admin Token), and testToken (User Token).
 
-## How to Test
+## How to Run
 
 Choose between using Swagger or Insomnia. If you choose Insomnia (RECOMMENDED), import the "HubbeRestaurante_Insomnia.json" file into the project's root folder and create a new collection in Insomnia. Start the application with:
 
 ```bash
-  $ npm install / yarn add
-  $ npm run dev / npm run prod
+  $ sudo docker-compose up -d --build
 ```
 After starting the application, a default administrator user will be created unless someone (the previously mentioned administrator user) changes it. Update the token variable (valid for 1 day) in Insomnia by logging in as an administrator. With this token, you can create administrator or customer users using the user/create routes. You can also register as a customer by creating "a new account." An administrator can create, edit tables, view all reservations, and create administrative users. A regular user can delete their reservations, view available tables for a specific time, edit their information, and create reservations. There are custom validations for all fields, explaining cases where the user may have made mistakes.
 

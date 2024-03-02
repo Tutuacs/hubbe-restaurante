@@ -1,0 +1,34 @@
+version: '3.9'
+services:
+
+  database_hubbe:
+    container_name: database_hubbe
+    restart: always
+    build: 
+      context: ./
+      dockerfile: mongo.Dockerfile
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: $MONGODB_USERNAME
+      MONGO_INITDB_ROOT_PASSWORD: $MONGODB_PASSWORD
+      MONGO_INITDB_DATABASE: Hubbe_Restaurante
+      MONGO_REPLICA_HOST: database_hubbe
+      MONGO_REPLICA_PORT: $MONGODB_REPLICA_PORT
+    ports:
+      - '$MONGODB_REPLICA_PORT:$MONGODB_REPLICA_PORT'
+    networks:
+      - database
+
+  api_hubbe:
+    container_name: api_hubbe
+    depends_on:
+      - database_hubbe
+    build: 
+      context: ./
+      dockerfile: api.Dockerfile
+    ports:
+      - '$PORT:$PORT'
+    networks:
+      - database
+
+networks:
+  database:
